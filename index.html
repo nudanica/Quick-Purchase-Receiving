@@ -1,0 +1,1435 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FDEEF5">
+<title>SURU Quick Purchase List</title>
+<style>
+:root{
+  --paper:#FDEEF5; --card:#FFFFFF; --ink:#2B2130; --ink2:#9B8AA3; --line:#F6DCE8;
+  --pop:#EC3E90; --pop-dark:#C42873; --pop-soft:#FCE4EF;
+  --tag:#FBBF24; --tag-dark:#D99A00; --ok:#22C55E; --sky:#38BDF8; --plum:#A78BFA;
+  --shadow:0 1px 2px rgba(236,62,144,.06), 0 6px 20px rgba(236,62,144,.10);
+  --font:"Noto Sans Thai","Sarabun",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);background:linear-gradient(180deg,#FDEEF5 0%,#FCE8F1 40%,#FDEEF5 100%);background-attachment:fixed;color:var(--ink);font-size:16px;line-height:1.45;
+  padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font-family:inherit;font-size:16px;color:inherit}
+button{cursor:pointer;border:none;background:none}
+:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.top{position:sticky;top:0;z-index:30;background:rgba(253,238,245,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:12px 16px 10px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.logo{font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:26px;font-weight:700;color:var(--pop);transform:rotate(-4deg);flex:none;line-height:1;padding:0 2px}
+.cv{margin-left:auto;font-size:11px;color:var(--pop);flex:none}
+.tripchip{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--card);
+  border:1px solid var(--line);border-radius:999px;padding:8px 15px;box-shadow:var(--shadow);transition:transform .12s}
+.tripchip:active{transform:scale(.98)}
+.tripchip b{font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tripchip small{color:var(--ink2);font-size:12px;flex:none}
+.gear{flex:none;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);
+  box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;position:relative;color:var(--pop)}
+.gear svg{width:18px;height:18px}
+.dot{position:absolute;right:-1px;top:-1px;width:11px;height:11px;border-radius:50%;border:2px solid var(--paper)}
+.dot.on{background:var(--ok)} .dot.wait{background:var(--tag)} .dot.off{background:#D9C7D3}
+.wrap{padding:14px;max-width:560px;margin:0 auto}
+
+.cambtn{width:100%;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;padding:8px 0 2px;transition:transform .12s}
+.cambtn:active{transform:scale(.97)}
+.camsvg{width:200px;max-width:70%;height:auto;filter:drop-shadow(0 6px 0 #D64890)}
+.camcap{text-align:center;margin-top:12px}
+.camcap b{display:block;font-size:19px;font-weight:800;color:var(--pop)}
+.camcap i{display:block;font-style:normal;font-size:12px;color:#C9799F;margin-top:2px}
+.uplink{display:inline-flex;align-items:center;gap:7px;background:var(--card);border-radius:999px;
+  padding:10px 18px;margin:14px auto 2px;box-shadow:0 2px 8px rgba(236,62,144,.14);border:1.5px solid #F3C9DD;cursor:pointer}
+.uplink:active{transform:scale(.97)}
+.uplink svg{width:17px;height:17px;color:var(--pop)}
+.uplink span{font-size:13px;font-weight:800;color:var(--pop)}
+.camrow{display:flex;flex-direction:column;align-items:center}
+.pickcard{display:flex;gap:10px;align-items:stretch;margin-bottom:11px;min-height:88px}
+.pickmain{flex:1;min-width:0;display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);text-align:left}
+.pickmain:active{transform:scale(.985)}
+.pickmain .th{width:60px;height:60px;border-radius:14px;object-fit:cover;flex:none;background:var(--pop-soft)}
+.pickmain .body{flex:1;min-width:0}
+.pickmain .nm{font-size:15px;font-weight:800;color:var(--ink);line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pickmain .meta{font-size:12px;color:var(--ink2);margin-top:4px;line-height:1.35}
+.allbtn{flex:none;align-self:stretch;width:118px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#FB8FC4,#EC3E90);color:#fff;
+  font-size:13px;font-weight:800;border-radius:18px;box-shadow:0 3px 0 var(--pop-dark);white-space:nowrap;text-align:center}
+.allbtn:active{transform:translateY(1px);box-shadow:0 2px 0 var(--pop-dark)}
+.bphoto-wrap{margin-bottom:14px}
+.bphoto{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.bphoto img{width:100%;max-height:32vh;object-fit:contain;background:var(--pop-soft);display:block}
+.bphoto .cap{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.bphoto .cap svg{width:15px;height:15px;color:var(--pop);flex:none}
+.bphoto .cap span{font-size:11.5px;font-weight:700;color:var(--pop);flex:1;line-height:1.3}
+.bphoto .cap .re{font-size:11px;color:var(--ink2);font-weight:700}
+.addbphoto{width:100%;background:var(--card);border:2px dashed #F3B6D2;border-radius:16px;padding:20px;text-align:center}
+.addbphoto:active{transform:scale(.98)}
+.addbphoto svg{width:28px;height:28px;color:var(--pop);margin-bottom:5px}
+.addbphoto .t{font-size:14px;font-weight:800;color:var(--pop)}
+.addbphoto .s{font-size:11px;color:#C9799F;margin-top:2px}
+
+.shot{position:relative;border-radius:14px;overflow:hidden;background:#000;box-shadow:var(--shadow)}
+.shot img{display:block;width:100%;max-height:46vh;object-fit:contain;background:#2B2130}
+.shot .retake{position:absolute;right:10px;bottom:10px;background:rgba(23,32,58,.86);color:#fff;
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700}
+
+.field{margin-top:14px}
+.field label{display:block;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--ink2);
+  margin-bottom:6px;text-transform:uppercase}
+.money{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.money .cur{display:flex;align-items:center;padding:0 16px;background:var(--pop-soft);font-weight:800;font-size:13px;
+  color:var(--pop);border-right:1px solid var(--line)}
+.money input{flex:1;min-width:0;border:none;background:none;padding:16px 14px;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.money input:focus{outline:none}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:58px;height:58px;border-radius:16px;background:var(--card);border:1px solid var(--line);
+  color:var(--pop);font-size:26px;font-weight:800;box-shadow:var(--shadow);flex:none}
+.stepper input{flex:1;min-width:0;text-align:center;font-size:30px;font-weight:800;padding:12px 4px;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.stepper input:focus{outline:none;border-color:var(--pop)}
+.rowline{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;
+  border-top:2px dashed #F1CFE0}
+.rowline span{font-size:13px;color:var(--ink2);font-weight:700}
+.rowline b{font-size:28px;letter-spacing:-.02em}
+.save{width:100%;margin-top:16px;background:linear-gradient(135deg,#F569AC,var(--pop));color:#fff;font-size:18px;font-weight:800;
+  padding:17px;border-radius:16px;box-shadow:0 3px 0 var(--pop-dark), var(--shadow);letter-spacing:.01em}
+.save:active{transform:translateY(2px);box-shadow:0 1px 0 var(--pop-dark)}
+.save[disabled]{background:#EBDCE4;box-shadow:none;color:#B6A3B0}
+.hint{font-size:12px;color:var(--ink2);margin-top:10px;text-align:center}
+.switchrow{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--ink2)}
+.switchrow input{width:18px;height:18px;accent-color:var(--pop)}
+
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:24px 0 12px}
+.sectionhead h2{margin:0;font-size:14px;letter-spacing:.02em;font-weight:800;color:var(--ink);
+  display:flex;align-items:center;gap:8px}
+.sectionhead h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--pop);flex:none}
+.sectionhead em{font-style:normal;font-size:12px;color:var(--ink2);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 12px 12px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+  background:linear-gradient(90deg,#F776B4,var(--pop))}
+.stat:nth-child(2)::before{background:linear-gradient(90deg,#FCD34D,var(--tag-dark))}
+.stat:nth-child(3)::before{background:linear-gradient(90deg,#4ADE80,#16A34A)}
+.stat .si{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;margin-bottom:8px;background:var(--pop-soft);color:var(--pop)}
+.stat:nth-child(2) .si{background:#FEF3C7;color:var(--tag-dark)}
+.stat:nth-child(3) .si{background:#DCFCE7;color:#16A34A}
+.stat u{display:block;text-decoration:none;font-size:10.5px;color:var(--ink2);font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.stat b{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;margin-top:2px;line-height:1.1}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);border-radius:16px;
+  padding:10px;display:flex;gap:12px;margin-bottom:10px;position:relative;width:100%;text-align:left}
+.card .th{width:78px;height:78px;flex:none;border-radius:14px;background:var(--pop-soft);object-fit:cover;box-shadow:0 2px 6px rgba(236,62,144,.12)}
+.card .body{flex:1;min-width:0}
+.card .nm{font-weight:800;font-size:15.5px;line-height:1.3;word-break:break-word;letter-spacing:-.01em}
+.card .nm.un{color:var(--ink2);font-weight:600;font-style:italic}
+.card .meta{font-size:12px;color:var(--ink2);margin-top:4px}
+.qtag{position:absolute;right:10px;top:10px;background:var(--tag);color:#4A3200;font-weight:800;font-size:17px;
+  padding:3px 10px 3px 14px;border-radius:4px;clip-path:polygon(8px 0,100% 0,100% 100%,8px 100%,0 50%)}
+.card .foot{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.acard{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+  padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.acard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--pop)}
+.acard.c2::before{background:var(--tag)} .acard.c3::before{background:var(--plum)}
+.acard .ah{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.acard .aic{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:var(--pop-soft);color:var(--pop)}
+.acard.c2 .aic{background:#FEF3C7;color:var(--tag-dark)} .acard.c3 .aic{background:#EDE9FE;color:#7C3AED}
+.acard .at{font-weight:800;font-size:16px;letter-spacing:-.01em}
+.acard .ameta{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:12px}
+.pill{font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:6px 13px;background:#FFF6FA}
+.badge{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:#F4EDF7;color:var(--ink2)}
+.badge.run{background:var(--pop-soft);color:var(--pop)}
+.badge.ok{background:#DCFCE7;color:#15803D}
+.badge.err{background:#FEE2E2;color:#DC2626}
+.badge.who{background:#EDE9FE;color:#6D28D9}
+
+.suggest{background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:16px;padding:13px;margin-bottom:10px}
+.suggest .pair{display:flex;gap:8px;align-items:center;margin:8px 0}
+.suggest .pair img{width:52px;height:52px;border-radius:10px;object-fit:cover;background:var(--pop-soft)}
+.suggest .pair div{flex:1;min-width:0;font-size:13px;line-height:1.3}
+.suggest .acts{display:flex;gap:8px;margin-top:8px}
+.suggest .acts button{flex:1;padding:10px;border-radius:10px;font-weight:800;font-size:14px}
+.btn-merge{background:var(--pop);color:#fff}
+.btn-skip{background:#fff;border:1px solid var(--line)}
+
+.empty{text-align:center;padding:44px 20px;color:var(--ink2)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.9);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
+  display:flex;padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.nav button{flex:1;padding:8px 4px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--ink2);
+  border-radius:14px;transition:background .15s, color .15s}
+.nav button .ic{display:block;font-size:20px;margin-bottom:3px;line-height:1}
+.nav button[aria-current="true"]{color:var(--pop);background:var(--pop-soft)}
+
+.scrim{position:fixed;inset:0;background:rgba(43,33,48,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--paper);width:100%;max-width:560px;border-radius:22px 22px 0 0;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h3{margin:0 0 4px;font-size:19px}
+.sheet p.sub{margin:0 0 14px;font-size:13px;color:var(--ink2)}
+.tin{width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:16px}
+.tin:focus{outline:none;border-color:var(--pop)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet .go{width:100%;margin-top:14px;background:linear-gradient(135deg,#F569AC,var(--pop));color:#fff;font-weight:800;padding:16px;border-radius:14px;font-size:16px}
+.sheet .ghost{width:100%;margin-top:8px;padding:14px;border-radius:12px;font-weight:700;color:var(--ink2)}
+.sheet .danger{color:var(--pop)}
+.buyrow{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;
+  padding:10px 0;border-bottom:1px dashed var(--line)}
+.buyrow .who{color:var(--ink2);font-size:11px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:22px;font-weight:800;letter-spacing:.18em;
+  color:var(--pop);background:var(--card);border:2px dashed var(--pop);border-radius:14px;padding:14px;text-align:center}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));
+  background:var(--pop);color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:700;
+  z-index:60;box-shadow:0 8px 20px rgba(0,0,0,.25);max-width:90vw;text-align:center}
+
+#stage{position:fixed;left:-99999px;top:0;width:794px}
+.page{width:794px;min-height:1123px;background:#fff;color:#222;padding:42px 40px;font-family:"Sarabun","Noto Sans Thai",sans-serif;box-sizing:border-box}
+.dhead{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #1a1a1a;padding-bottom:14px}
+.dhead .dt{font-size:30px;font-weight:800;color:#1a1a1a;letter-spacing:-.01em}
+.dhead .dtrip{font-size:15px;color:#888;margin-top:5px}
+.dhead .brand{font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:34px;font-weight:700;color:#EC3E90;transform:rotate(-4deg)}
+.dsum{display:flex;gap:12px;margin:18px 0 6px}
+.dsc{flex:1;background:#F7F7F5;border-radius:14px;padding:14px 16px;text-align:center}
+.dsc u{display:block;text-decoration:none;font-size:12px;color:#999;font-weight:700}
+.dsc b{display:block;font-size:23px;font-weight:800;color:#1a1a1a;margin-top:4px}
+.dgrp{display:flex;justify-content:space-between;align-items:center;margin:26px 0 12px;padding-left:14px;border-left:6px solid #EC3E90}
+.dgrp .gl{font-size:18px;font-weight:800;color:#1a1a1a;line-height:1.25}
+.dgrp .gl span{display:block;font-size:13px;font-weight:600;color:#999;margin-top:2px}
+.dgrp .gr{text-align:right;font-size:13px;color:#999;font-weight:600}
+.dgrp .gr b{display:block;font-size:21px;font-weight:800;color:#EC3E90;margin-top:2px}
+.pt{width:100%;border-collapse:collapse;table-layout:fixed}
+.pt th{font-size:13px;font-weight:800;color:#555;background:#F2F2F0;border:1px solid #DADAD6;padding:10px 6px;text-align:center}
+.pt td{border:1px solid #DADAD6;padding:10px 8px;vertical-align:middle;text-align:center;font-size:16px}
+.pt td.l{text-align:left}
+.pt img{width:100%;height:96px;object-fit:contain;display:block;border-radius:8px}
+.pt .nm{font-size:16px;font-weight:700;color:#1a1a1a;line-height:1.3}
+.pt .q{font-size:30px;font-weight:800;color:#1a1a1a}
+.pt .cost{font-size:15px;font-weight:600}
+.pt .tot{font-size:15px;font-weight:700}
+.pt td.blank{background:repeating-linear-gradient(0deg,transparent,transparent 21px,#eee 21px,#eee 22px)}
+.chk{width:26px;height:26px;border:2px solid #999;margin:0 auto;border-radius:5px}
+.dfoot{display:flex;justify-content:flex-end;font-size:13px;color:#999;margin-top:16px;padding-top:9px;border-top:1px solid #DADAD6}
+.dsec{font-size:16px;font-weight:800;color:#1a1a1a;margin:24px 0 12px;padding-left:12px;border-left:6px solid #EC3E90}
+.bxblock{border:1px solid #E2E2DE;border-radius:14px;padding:15px 16px;margin-bottom:13px}
+.bxh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.bxh .bn{font-size:17px;font-weight:800;color:#1a1a1a}
+.bxh .bq{font-size:14px;font-weight:800;color:#EC3E90}
+.bxi{display:flex;justify-content:space-between;font-size:15px;padding:6px 0;border-top:1px dashed #E8E8E4}
+.bxi .bin{color:#333}.bxi .biq{font-weight:700;color:#1a1a1a}
+.bxphoto{display:flex;gap:14px;align-items:center;background:#F7F7F5;border-radius:12px;padding:12px;margin-bottom:14px}
+.bxphoto img{width:150px;height:110px;object-fit:cover;border-radius:8px;flex:none;background:#eee}
+.bxphoto-cap{font-size:13px;color:#777;line-height:1.5}
+.bxphoto-cap b{display:block;color:#1a1a1a;font-size:14px;margin-bottom:2px}
+</style>
+
+<div class="top">
+  <div class="logo">Suru</div>
+  <button class="tripchip" id="tripChip"><b id="tripName">เลือกทริป</b><small id="tripCur"></small><span class="cv">▾</span></button>
+  <button class="gear" id="gearBtn" aria-label="ตั้งค่า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5l-1.4 1.4M7.9 16.1l-1.4 1.4m0-11.4l1.4 1.4m8.2 8.2l1.4 1.4" stroke-linecap="round"/></svg><span class="dot off" id="syncDot"></span></button>
+</div>
+
+<div id="app"></div>
+
+<nav class="nav">
+  <button data-tab="add" aria-current="true"><span class="ic">＋</span>บันทึก</button>
+  <button data-tab="list"><span class="ic">▤</span>รายการ</button>
+  <button data-tab="box"><span class="ic">▧</span>กล่อง</button>
+  <button data-tab="export"><span class="ic">⎙</span>ส่งออก</button>
+</nav>
+
+<input type="file" id="cam" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="pick" accept="image/*" style="display:none">
+<input type="file" id="boxcam" accept="image/*" style="display:none">
+<input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
+<div id="stage"></div>
+<div id="modal"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* =========================================================
+   SURU Quick Purchase List v2
+   บันทึกลงเครื่องก่อนเสมอ แล้วซิงก์ขึ้นเซิร์ฟเวอร์เป็นเบื้องหลัง
+   ========================================================= */
+
+const CURRENCIES = [
+  {code:'JPY', sym:'¥', rate:0.23}, {code:'KRW', sym:'₩', rate:0.026},
+  {code:'CNY', sym:'¥', rate:5.0},  {code:'USD', sym:'$', rate:36.0},
+  {code:'EUR', sym:'€', rate:39.0}, {code:'THB', sym:'฿', rate:1}
+];
+const uid  = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const now  = () => Date.now();
+const esc  = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt  = n => { const v=Number(n); return (isFinite(v)?Math.round(v*100)/100:0).toLocaleString('en-US',{maximumFractionDigits:2}); };
+
+let DB = {
+  v:2, device:'', deviceName:'', server:'', token:'',
+  trips:[], groups:[], entries:[], boxes:[], sync:{},
+  activeTrip:null, autoShot:true
+};
+let PCACHE = {};        // id -> dataURL รูปเต็ม (โหลดตามต้องการ)
+let tab='add', draft=null, memOnly=false, BACKEND='memory';
+let form={name:'', cost:'', qty:'1'};   // ค่าที่กำลังพิมพ์อยู่ เก็บไว้กันหายตอนหน้าจอวาดใหม่
+const composing = () => tab==='add' && (draft || form.cost!=='' || form.name!=='');
+let syncing=false, lastSyncOk=0;
+
+/* ---------- storage ---------- */
+const IDB = (()=>{
+  let p=null;
+  const open = () => p || (p = new Promise((ok,no)=>{
+    const r = indexedDB.open('suru-quick-purchase', 2);
+    r.onupgradeneeded = () => { if(!r.result.objectStoreNames.contains('kv')) r.result.createObjectStore('kv'); };
+    r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error);
+  }));
+  const run = (mode,fn) => open().then(db => new Promise((ok,no)=>{
+    const q = fn(db.transaction('kv',mode).objectStore('kv'));
+    q.onsuccess=()=>ok(q.result); q.onerror=()=>no(q.error);
+  }));
+  return { get:k=>run('readonly',s=>s.get(k)), set:(k,v)=>run('readwrite',s=>s.put(v,k)),
+           del:k=>run('readwrite',s=>s.delete(k)) };
+})();
+const S = {
+  async get(k){ try{
+    if(BACKEND==='claude'){ const r=await window.storage.get(k); return r?JSON.parse(r.value):null; }
+    if(BACKEND==='idb'){ const v=await IDB.get(k); return v===undefined?null:v; }
+  }catch(e){} return null; },
+  async set(k,v){ try{
+    if(BACKEND==='claude'){ await window.storage.set(k,JSON.stringify(v)); return true; }
+    if(BACKEND==='idb'){ await IDB.set(k,v); return true; }
+  }catch(e){ memOnly=true; } return false; },
+  async del(k){ try{ if(BACKEND==='idb') await IDB.del(k); }catch(e){} }
+};
+const saveMeta = () => S.set('suru:meta', DB);
+const putPhoto = (id,d) => { PCACHE[id]=d; return S.set('suru:photo:'+id, d); };
+async function getPhoto(id){
+  if(PCACHE[id]) return PCACHE[id];
+  const v = await S.get('suru:photo:'+id);
+  if(v){ PCACHE[id]=v; return v; }
+  return null;
+}
+
+/* ---------- helpers ---------- */
+const trip    = () => DB.trips.find(t=>t.id===DB.activeTrip && !t.deleted) || null;
+const cur     = () => CURRENCIES.find(c=>c.code===(trip()||{}).currency) || CURRENCIES[0];
+const money   = n => cur().sym + fmt(n);
+const thb     = n => '฿' + fmt(n * (trip()?.rate ?? cur().rate));
+const live    = a => a.filter(x=>!x.deleted);
+const cmpTime = (a,b) => String(a&&a.createdAt||'').localeCompare(String(b&&b.createdAt||''));
+const num     = v => { const n = Number(v); return isFinite(n) ? n : 0; };  // กันค่าเสียเป็น NaN
+const tEntries= () => live(DB.entries).filter(e=>e.tripId===DB.activeTrip);
+const tGroups = () => live(DB.groups).filter(g=>g.tripId===DB.activeTrip);
+const gEntries= gid => live(DB.entries).filter(e=>e.groupId===gid);
+const tBoxes  = () => live(DB.boxes).filter(b=>b.tripId===DB.activeTrip);
+// จำนวนที่ซื้อมาจริงของสินค้าหนึ่งชนิด
+const groupBought = gid => gEntries(gid).reduce((a,e)=>a+num(e.qty),0);
+// จำนวนที่ถูกใส่กล่องไปแล้วทั้งหมดของสินค้าหนึ่งชนิด (ทุกกล่อง)
+function groupPacked(gid, exceptBox){
+  let n=0;
+  tBoxes().forEach(b=>{ if(b.id===exceptBox) return; (b.items||[]).forEach(it=>{ if(it.groupId===gid) n+=num(it.qty); }); });
+  return n;
+}
+// เหลือใส่กล่องได้อีกเท่าไร
+const groupRemain = (gid, exceptBox) => Math.max(0, groupBought(gid) - groupPacked(gid, exceptBox));
+const boxQty = b => (b.items||[]).reduce((a,it)=>a+num(it.qty),0);
+const touch   = r => { r.updated = now(); r.dirty = 1; return r; };
+
+const groupName = g => g.name || '';
+function groupStats(g){
+  const es = gEntries(g.id);
+  const qty = es.reduce((a,e)=>a+num(e.qty),0);
+  const sum = es.reduce((a,e)=>a+num(e.total),0);
+  return { qty, sum, avg: qty?sum/qty:0, buys: es.length, es };
+}
+const gEntriesSorted = gid => gEntries(gid).slice().sort(cmpTime);
+const thumbOf = g => (gEntriesSorted(g.id)[0]||{}).thumb || '';
+function toast(m){
+  const d=document.createElement('div'); d.className='toast'; d.textContent=m;
+  document.body.appendChild(d); setTimeout(()=>d.remove(),2200);
+}
+
+/* ---------- boot ---------- */
+async function boot(){
+  if(window.storage) BACKEND='claude';
+  else if(window.indexedDB){ try{ await IDB.get('probe'); BACKEND='idb'; }catch(e){ BACKEND='memory'; } }
+  memOnly = BACKEND==='memory';
+  try{ if(navigator.storage?.persist) await navigator.storage.persist(); }catch(e){}
+
+  if(!memOnly){ const m = await S.get('suru:meta'); if(m) DB = Object.assign(DB, m); }
+  // ซ่อมข้อมูลเก่าที่เพี้ยน (NaN / ไม่มีวันเวลา) จากเวอร์ชันก่อน
+  let fixed=false;
+  (DB.entries||[]).forEach(e=>{
+    const before = JSON.stringify([e.cost,e.qty,e.total,e.createdAt]);
+    fixEntry(e);
+    if(JSON.stringify([e.cost,e.qty,e.total,e.createdAt]) !== before){
+      e.updated = now(); e.dirty = 1; fixed=true;   // ดันขึ้นเซิร์ฟเวอร์ทับตัวเสีย
+    }
+  });
+  if(fixed){ await saveMeta(); }
+  if(!DB.device){ DB.device = uid('dv_'); DB.deviceName = 'เครื่อง ' + DB.device.slice(-4); await saveMeta(); }
+  await restoreDraft();
+  render();
+  if(memOnly) toast('เบราว์เซอร์นี้เก็บข้อมูลถาวรไม่ได้ ข้อมูลจะหายเมื่อปิดแท็บ');
+  syncNow(true);
+  setInterval(()=>{ if(document.visibilityState==='visible') syncNow(true); }, 15000);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') syncNow(true); });
+  window.addEventListener('online', ()=>syncNow(true));
+}
+
+/* =========================================================
+   SYNC — เก็บลงเครื่องก่อน แล้วค่อยส่งขึ้นเซิร์ฟเวอร์
+   ========================================================= */
+async function api(path, body, timeoutMs){
+  if(!DB.server) throw new Error('ยังไม่ได้ตั้งค่าเซิร์ฟเวอร์');
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), timeoutMs || 12000);
+  try{
+    const r = await fetch(DB.server + path, {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'X-App-Token': DB.token || ''},
+      body: JSON.stringify(body),
+      signal: ctrl.signal
+    });
+    if(!r.ok) throw new Error('เซิร์ฟเวอร์ตอบ ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(timer); }
+}
+const wire = (kind, r) => ({
+  id:r.id, kind, trip: kind==='trip'? r.id : r.tripId,
+  updated:r.updated||0, deleted:r.deleted?1:0,
+  data: JSON.stringify(r)
+});
+function dirtyRecords(tid){
+  const out=[];
+  DB.trips.filter(t=>t.id===tid && t.dirty).forEach(t=>out.push(wire('trip',t)));
+  DB.boxes.filter(b=>b.tripId===tid && b.dirty).forEach(b=>out.push(wire('box',b)));
+  DB.groups.filter(g=>g.tripId===tid && g.dirty).forEach(g=>out.push(wire('group',g)));
+  DB.entries.filter(e=>e.tripId===tid && e.dirty).forEach(e=>out.push(wire('entry',e)));
+  return out;
+}
+function fixEntry(e){
+  if(!e || typeof e!=='object') return e;
+  const c=num(e.cost), q=num(e.qty);
+  e.cost=c; e.qty=q;
+  if(!isFinite(Number(e.total))) e.total=c*q; else e.total=num(e.total);
+  // createdAt ต้องเป็น string ที่แปลงเป็นวันได้จริง ไม่งั้นแทนด้วยเวลาปัจจุบัน
+  if(!e.createdAt || typeof e.createdAt!=='string' || isNaN(new Date(e.createdAt).getTime())){
+    e.createdAt = new Date().toISOString();
+  }
+  return e;
+}
+function applyRemote(rec){
+  const list = rec.kind==='trip'? DB.trips : rec.kind==='group'? DB.groups : rec.kind==='box'? DB.boxes : DB.entries;
+  const inc = JSON.parse(rec.data);
+  inc.updated = rec.updated; inc.deleted = rec.deleted; delete inc.dirty;
+  if(rec.kind==='entry') fixEntry(inc);
+  const i = list.findIndex(x=>x.id===inc.id);
+  if(i<0){ list.push(inc); return; }
+  if((list[i].updated||0) < rec.updated) list[i] = inc;
+}
+function setDot(){
+  const d = document.getElementById('syncDot'); if(!d) return;
+  const pending = DB.server ? dirtyRecords(DB.activeTrip).length : 0;
+  d.className = 'dot ' + (!DB.server ? 'off' : pending ? 'wait' : 'on');
+}
+async function syncNow(silent){
+  if(syncing || !DB.server || !DB.activeTrip) { setDot(); return; }
+  syncing = true;
+  try{
+    const tid = DB.activeTrip;
+    const changes = dirtyRecords(tid);
+    const res = await api('/sync', { trip:tid, since: DB.sync[tid]||0, changes });
+    (res.records||[]).forEach(applyRemote);
+    changes.forEach(c=>{
+      const l = [...DB.trips,...DB.groups,...DB.entries].find(x=>x.id===c.id);
+      if(l && l.updated <= c.updated) delete l.dirty;
+    });
+    DB.sync[tid] = res.now;
+    lastSyncOk = now();
+    await saveMeta();
+    if(composing()) setDot(); else render();
+    pushPhotos();
+    if(!silent) toast('ซิงก์แล้ว');
+  }catch(e){
+    if(!silent) toast('ซิงก์ไม่สำเร็จ: ' + e.message);
+  }finally{ syncing=false; setDot(); }
+}
+async function pushPhotos(){
+  if(!DB.server) return;
+  const pend = DB.entries.filter(e=>e.tripId===DB.activeTrip && !e.deleted && !e.photoUp).slice(0,3);
+  for(const e of pend){
+    const data = await getPhoto(e.id);
+    if(!data){ e.photoUp = 1; continue; }
+    try{ await api('/photo/put', {trip:e.tripId, id:e.id, data}); e.photoUp = 1; }
+    catch(err){ break; }
+  }
+  await saveMeta();
+}
+async function pullPhotos(ids){
+  const missing = [];
+  for(const id of ids){ if(!(await getPhoto(id))) missing.push(id); }
+  if(!missing.length || !DB.server) return missing.length;
+  const deadline = Date.now() + 20000;   // ใช้เวลาดึงรูปรวมไม่เกิน 20 วินาที แล้วไปต่อ
+  for(let i=0;i<missing.length;i+=4){
+    if(Date.now() > deadline) break;
+    try{
+      const res = await api('/photo/get', {ids: missing.slice(i,i+4)}, 8000);
+      for(const [id,data] of Object.entries(res.photos||{})) await putPhoto(id, data);
+    }catch(e){ break; }
+  }
+  let still=0; for(const id of missing) if(!(await getPhoto(id))) still++;
+  return still;
+}
+
+/* ---------- image ---------- */
+const loadImg = src => new Promise((ok,no)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=no; i.src=src; });
+async function processPhoto(file){
+  const url = URL.createObjectURL(file);
+  const img = await loadImg(url);
+  const draw = (max,q)=>{
+    const s = Math.min(1, max/Math.max(img.width,img.height));
+    const c = document.createElement('canvas');
+    c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    return c.toDataURL('image/jpeg',q);
+  };
+  const full = draw(1000,.72), thumb = draw(150,.55);
+  const c = document.createElement('canvas'); c.width=c.height=8;
+  const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,8,8);
+  const d=ctx.getImageData(0,0,8,8).data, g=[];
+  for(let i=0;i<64;i++) g.push(.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2]);
+  const avg=g.reduce((a,b)=>a+b,0)/64;
+  const hash=g.map(v=>v>avg?'1':'0').join('');
+  URL.revokeObjectURL(url);
+  let barcode='';
+  try{ if('BarcodeDetector' in window){ const res = await new BarcodeDetector().detect(await loadImg(full));
+    if(res && res[0]) barcode = res[0].rawValue||''; } }catch(e){}
+  return {full, thumb, hash, barcode};
+}
+const hamming=(a,b)=>{ if(!a||!b||a.length!==b.length) return 64; let n=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i])n++; return n; };
+
+/* ---------- แนะนำสินค้าซ้ำ ---------- */
+const norm = s => String(s||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+function nameSim(a,b){
+  a=norm(a); b=norm(b);
+  if(!a||!b) return 0; if(a===b) return 1;
+  const A=new Set(a.split(' ').filter(w=>w.length>1)), B=new Set(b.split(' ').filter(w=>w.length>1));
+  if(!A.size||!B.size) return 0;
+  let hit=0; A.forEach(w=>{ if(B.has(w)) hit++; });
+  return hit/Math.min(A.size,B.size);
+}
+function pairScore(g1,g2){
+  const e1=gEntries(g1.id), e2=gEntries(g2.id);
+  const b1=e1.map(e=>e.barcode).filter(Boolean), b2=e2.map(e=>e.barcode).filter(Boolean);
+  if(b1.some(b=>b2.includes(b))) return {score:.99, why:'บาร์โค้ดตรงกัน'};
+  let img=0; e1.forEach(a=>e2.forEach(b=>{ img=Math.max(img,1-hamming(a.hash,b.hash)/64); }));
+  const nm = nameSim(groupName(g1), groupName(g2));
+  return { score: Math.max(nm*.65+img*.35, img>=.92?.8:0),
+           why: nm>.6?'ชื่อสินค้าใกล้เคียง' : img>=.9?'รูปสินค้าคล้ายกันมาก' : 'ชื่อและรูปใกล้เคียง' };
+}
+function suggestions(){
+  const gs=tGroups(), out=[];
+  for(let i=0;i<gs.length;i++) for(let j=i+1;j<gs.length;j++){
+    const a=gs[i], b=gs[j];
+    if((a.skip||[]).includes(b.id)||(b.skip||[]).includes(a.id)) continue;
+    const {score,why}=pairScore(a,b);
+    if(score>=.62) out.push({a,b,score,why});
+  }
+  return out.sort((x,y)=>y.score-x.score).slice(0,4);
+}
+
+/* =========================================================
+   CRUD
+   ========================================================= */
+async function savePurchase(cost, qty, shot, name){
+  const t = trip();
+  const id = uid('e_');
+  const g = touch({ id:uid('g_'), tripId:t.id, name:(name||'').trim(), skip:[] });
+  cost=num(cost); qty=num(qty);
+  const e = touch({ id, tripId:t.id, groupId:g.id, cost, qty, total:cost*qty,
+    createdAt:new Date().toISOString(), currency:t.currency, rate:t.rate,
+    thumb:shot.thumb, hash:shot.hash, device:DB.device, by:DB.deviceName,
+    barcode: shot.barcode||'' });
+  DB.groups.push(g); DB.entries.push(e);
+  await putPhoto(id, shot.full);
+  await saveMeta();
+  syncNow(true);
+}
+async function updateEntry(id, cost, qty){
+  const e = DB.entries.find(x=>x.id===id); if(!e) return;
+  cost=num(cost); qty=num(qty); e.cost=cost; e.qty=qty; e.total=cost*qty; touch(e);
+  await reconcileBoxes();
+  await saveMeta(); render(); syncNow(true); toast('แก้ไขแล้ว');
+}
+// หลังลบหรือลดจำนวนสินค้า ให้จำนวนในกล่องไม่เกินที่มีจริง ส่วนเกินถูกตัดออก
+async function reconcileBoxes(){
+  let changed=false, trimmed=false;
+  tBoxes().forEach(b=>{
+    const items=[];
+    (b.items||[]).forEach(it=>{
+      const bought = groupBought(it.groupId);
+      if(bought<=0){ trimmed=true; changed=true; return; }        // สินค้าถูกลบหมด
+      // จำกัดไม่ให้รวมทุกกล่องเกินที่ซื้อ โดยไล่ตามลำดับกล่อง
+      items.push(it);
+    });
+    if(items.length!==(b.items||[]).length){ b.items=items; touch(b); }
+  });
+  // ไล่ตัดส่วนที่รวมเกินทีละสินค้า
+  tGroups().forEach(g=>{
+    let over = groupPacked(g.id) - groupBought(g.id);
+    if(over<=0) return;
+    changed=true; trimmed=true;
+    tBoxes().slice().reverse().forEach(b=>{               // ตัดจากกล่องหลังก่อน
+      if(over<=0) return;
+      const it=(b.items||[]).find(x=>x.groupId===g.id);
+      if(!it) return;
+      const cut=Math.min(it.qty, over); it.qty-=cut; over-=cut;
+      if(it.qty<=0) b.items=b.items.filter(x=>x!==it);
+      touch(b);
+    });
+  });
+  if(changed){ await saveMeta(); }
+  if(trimmed) toast('ปรับจำนวนในกล่องให้ตรงกับของที่มีแล้ว');
+  return changed;
+}
+
+async function deleteEntry(id){
+  const e = DB.entries.find(x=>x.id===id); if(!e) return;
+  e.deleted=1; touch(e);
+  const g = DB.groups.find(x=>x.id===e.groupId);
+  if(g && !gEntries(g.id).length){ g.deleted=1; touch(g); }
+  await S.del('suru:photo:'+id); delete PCACHE[id];
+  await reconcileBoxes();
+  await saveMeta(); render(); syncNow(true); toast('ลบรายการซื้อแล้ว');
+}
+async function deleteGroup(gid){
+  const g = DB.groups.find(x=>x.id===gid); if(!g) return;
+  gEntries(gid).forEach(e=>{ e.deleted=1; touch(e); });
+  g.deleted=1; touch(g);
+  await reconcileBoxes();
+  await saveMeta(); closeModal(); render(); syncNow(true); toast('ลบสินค้าแล้ว');
+}
+async function splitEntry(id){
+  const e = DB.entries.find(x=>x.id===id); if(!e) return;
+  const g = touch({ id:uid('g_'), tripId:e.tripId, name:'', skip:[] });
+  DB.groups.push(g); e.groupId=g.id; touch(e);
+  await saveMeta(); closeModal(); render(); syncNow(true); toast('แยกออกเป็นสินค้าใหม่แล้ว');
+}
+async function mergeGroups(aId,bId){
+  const a=DB.groups.find(g=>g.id===aId), b=DB.groups.find(g=>g.id===bId);
+  if(!a||!b) return;
+  DB.entries.forEach(e=>{ if(e.groupId===b.id){ e.groupId=a.id; touch(e); } });
+  if(!a.name && b.name) a.name=b.name;
+  b.deleted=1; touch(b); touch(a);
+  await saveMeta(); render(); syncNow(true); toast('รวมเป็นรายการเดียวแล้ว');
+}
+async function skipPair(aId,bId){
+  const a=DB.groups.find(g=>g.id===aId);
+  a.skip=[...(a.skip||[]), bId]; touch(a);
+  await saveMeta(); render(); syncNow(true);
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  const t=trip();
+  document.getElementById('tripName').textContent = t ? t.name : 'เลือกทริป';
+  document.getElementById('tripCur').textContent  = t ? t.currency : 'แตะเพื่อเริ่ม';
+  document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current', String(b.dataset.tab===tab)));
+  const ae=document.activeElement;
+  const keep = ae && (ae.id==='cost'||ae.id==='qty'||ae.id==='pname') ? {id:ae.id, a:ae.selectionStart, b:ae.selectionEnd} : null;
+  document.getElementById('app').innerHTML = !t ? viewNoTrip() : tab==='add'?viewAdd() : tab==='list'?viewList() : tab==='box'?viewBox() : viewExport();
+  if(keep){ const el=document.getElementById(keep.id);
+    if(el){ el.focus(); try{ el.setSelectionRange(keep.a, keep.b); }catch(e){} } }
+  setDot();
+}
+const viewNoTrip = () => `<div class="wrap"><div class="empty">
+  <b>ยังไม่มีทริป</b>สร้างทริปใหม่ หรือเข้าร่วมทริปที่เพื่อนสร้างไว้ด้วยรหัสทริป
+  <div style="margin-top:18px"><button class="save" onclick="openTrip()">เปิดเมนูทริป</button></div></div></div>`;
+
+function viewAdd(){
+  const c=cur();
+  const shot = draft
+    ? `<div class="shot"><img src="${draft.full}" alt="รูปสินค้าที่ถ่ายไว้"><button class="retake" onclick="shoot()">ถ่ายใหม่</button></div>`
+    : `<div class="camrow"><button class="cambtn" onclick="shoot()" aria-label="ถ่ายรูปสินค้า">
+        <svg class="camsvg" viewBox="0 0 300 132" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="camg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FB8FC4"/><stop offset="1" stop-color="#EC5FA0"/></linearGradient></defs>
+          <rect x="42" y="30" width="216" height="96" rx="26" fill="url(#camg)"/>
+          <rect x="122" y="16" width="56" height="20" rx="8" fill="#F7A8CE"/>
+          <circle cx="150" cy="78" r="32" fill="none" stroke="#fff" stroke-width="5" opacity=".9"/>
+          <circle cx="150" cy="78" r="15" fill="#fff" opacity=".38"/>
+          <circle cx="224" cy="52" r="6.5" fill="#fff" opacity=".8"/>
+        </svg>
+        <span class="camcap"><b>ถ่ายรูปสินค้า</b><i>แตะเพื่อเปิดกล้อง</i></span>
+      </button>
+      <button class="uplink" onclick="pickPhoto()" aria-label="เลือกจากคลังรูป">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>เลือกจากคลังรูป</span>
+      </button></div>`;
+  return `<div class="wrap">${shot}
+    <div class="field"><label>ชื่อสินค้า (ไม่ใส่ก็ได้)</label>
+      <input class="tin" id="pname" placeholder="เว้นไว้ก็ได้ ใส่ทีหลังในแท็บรายการ" value="${esc(form.name)}" oninput="onName()"></div>
+    <div class="field"><label>ต้นทุนต่อชิ้น (${c.code})</label>
+      <div class="money"><span class="cur">${c.sym}</span>
+        <input id="cost" inputmode="decimal" placeholder="0" value="${esc(form.cost)}" oninput="recalc()"></div></div>
+    <div class="field"><label>จำนวนที่ซื้อ</label>
+      <div class="stepper"><button onclick="bump(-1)" aria-label="ลดจำนวน">−</button>
+        <input id="qty" inputmode="numeric" value="${esc(form.qty)}" oninput="recalc()">
+        <button onclick="bump(1)" aria-label="เพิ่มจำนวน">＋</button></div></div>
+    <div class="rowline"><span>ยอดรวมรายการนี้</span><b id="sum">${c.sym}0</b></div>
+    <div class="hint" id="sumthb">≈ ฿0</div>
+    <button class="save" id="saveBtn" onclick="doSave()" ${draft?'':'disabled'}>บันทึก</button>
+    <label class="switchrow" style="justify-content:center"><input type="checkbox" ${DB.autoShot?'checked':''}
+      onchange="DB.autoShot=this.checked;saveMeta()">เปิดกล้องถ่ายชิ้นต่อไปทันทีหลังบันทึก</label>
+    <div class="hint">วันที่ เวลา สกุลเงิน และยอดรวม ระบบใส่ให้เอง</div></div>`;
+}
+
+function viewList(){
+  const gs=tGroups();
+  if(!gs.length) return `<div class="wrap"><div class="empty"><b>ยังไม่มีรายการในทริปนี้</b>ไปที่แท็บ “บันทึก” แล้วถ่ายสินค้าชิ้นแรก</div></div>`;
+  const es=tEntries();
+  const totalQty=es.reduce((a,e)=>a+num(e.qty),0), totalSum=es.reduce((a,e)=>a+num(e.total),0);
+  const sug=suggestions();
+  const devices = [...new Set(es.map(e=>e.by).filter(Boolean))];
+  const rows = gs.map(g=>{
+    const s=groupStats(g), nm=groupName(g);
+    const badge = nm ? '' : '<span class="badge run">แตะเพื่อตั้งชื่อ</span>';
+    const who = [...new Set(s.es.map(e=>e.by).filter(Boolean))];
+    return `<button class="card" onclick="openGroup('${g.id}')">
+      <img class="th" src="${thumbOf(g)}" alt="">
+      <div class="body">
+        <div class="nm ${nm?'':'un'}">${esc(nm||'ยังไม่มีชื่อสินค้า')}</div>
+        <div class="meta">เฉลี่ย ${money(s.avg)}/ชิ้น · รวม ${money(s.sum)} · ซื้อ ${s.buys} ครั้ง</div>
+        <div class="foot">${badge}${who.length>1?`<span class="badge who">${who.length} เครื่อง</span>`:''}</div>
+      </div><div class="qtag">${s.qty}</div></button>`;
+  }).join('');
+  const sugHtml = sug.map(s=>`<div class="suggest">
+      <b style="font-size:14px">น่าจะเป็นสินค้าชนิดเดียวกัน</b>
+      <div style="font-size:12px;color:#7A5C00;margin-top:2px">${esc(s.why)} · ความมั่นใจ ${Math.round(s.score*100)}%</div>
+      <div class="pair"><img src="${thumbOf(s.a)}" alt=""><div>${esc(groupName(s.a)||'ยังไม่มีชื่อ')} · ${groupStats(s.a).qty} ชิ้น</div></div>
+      <div class="pair"><img src="${thumbOf(s.b)}" alt=""><div>${esc(groupName(s.b)||'ยังไม่มีชื่อ')} · ${groupStats(s.b).qty} ชิ้น</div></div>
+      <div class="acts"><button class="btn-merge" onclick="mergeGroups('${s.a.id}','${s.b.id}')">รวมเป็นรายการเดียว</button>
+        <button class="btn-skip" onclick="skipPair('${s.a.id}','${s.b.id}')">คนละอย่าง</button></div></div>`).join('');
+  return `<div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="si">▦</div><u>ชนิดสินค้า</u><b>${gs.length}</b></div>
+      <div class="stat"><div class="si">▧</div><u>จำนวนชิ้น</u><b>${totalQty}</b></div>
+      <div class="stat"><div class="si">฿</div><u>ต้นทุนรวม</u><b style="font-size:19px">${money(totalSum)}</b></div></div>
+    <div class="hint" style="text-align:left;margin-top:8px">≈ ${thb(totalSum)} · ${esc(trip().name)}${devices.length>1?` · ${devices.length} เครื่องช่วยกันถ่าย`:''}</div>
+    ${sug.length?`<div class="sectionhead"><h2>ตรวจสอบก่อนรวม</h2><em>${sug.length} คู่</em></div>${sugHtml}`:''}
+    <div class="sectionhead"><h2>สรุปรายการ</h2><em>แตะเพื่อแก้ไข</em></div>${rows}</div>`;
+}
+
+function viewBox(){
+  const boxes = tBoxes();
+  const gs = tGroups();
+  if(!gs.length) return '<div class="wrap"><div class="empty"><b>ยังไม่มีสินค้าให้จัดกล่อง</b>ไปที่แท็บ “บันทึก” ถ่ายสินค้าก่อน แล้วค่อยกลับมาจัดลงกล่อง</div></div>';
+  const totalPacked = boxes.reduce((a,b)=>a+boxQty(b),0);
+  const totalBought = gs.reduce((a,g)=>a+groupBought(g.id),0);
+  const rows = boxes.map((b,i)=>{
+    const q = boxQty(b);
+    const kinds = new Set((b.items||[]).map(it=>it.groupId)).size;
+    return '<button class="card" onclick="openBox(\'' + b.id + '\')">'
+      + '<div class="body">'
+        + '<div class="nm">' + esc(b.name || ('กล่อง ' + (i+1))) + '</div>'
+        + '<div class="meta">' + kinds + ' ชนิด · ใส่แล้ว ' + q + ' ชิ้น</div></div>'
+      + '<div class="qtag">' + q + '</div></button>';
+  }).join('');
+  const left = totalBought - totalPacked;
+  return '<div class="wrap">'
+    + '<div class="stats">'
+      + '<div class="stat"><div class="si">▧</div><u>จำนวนกล่อง</u><b>' + boxes.length + '</b></div>'
+      + '<div class="stat"><div class="si">✓</div><u>ลงกล่องแล้ว</u><b>' + totalPacked + '</b></div>'
+      + '<div class="stat"><div class="si">◷</div><u>ยังไม่ลง</u><b>' + left + '</b></div></div>'
+    + (left>0 ? '<div class="hint" style="text-align:left;margin-top:8px">ยังมีสินค้าอีก ' + left + ' ชิ้นที่ยังไม่ได้ใส่กล่อง</div>' : '<div class="hint" style="text-align:left;margin-top:8px;color:var(--ok)">จัดครบทุกชิ้นแล้ว</div>')
+    + '<button class="save" style="margin-top:14px" onclick="newBox()">＋ สร้างกล่องใหม่</button>'
+    + (boxes.length ? '<div class="sectionhead"><h2>กล่องทั้งหมด</h2><em>แตะเพื่อจัดของ</em></div>' + rows : '')
+    + '</div>';
+}
+
+async function newBox(){
+  const n = live(DB.boxes).filter(b=>b.tripId===DB.activeTrip).length + 1;
+  const b = touch({ id:uid('bx_'), tripId:DB.activeTrip, name:'', items:[] });
+  DB.boxes.push(b);
+  await saveMeta(); render(); syncNow(true); openBox(b.id);
+}
+
+async function openBox(bid){
+  const b = DB.boxes.find(x=>x.id===bid); if(!b) return;
+  const idx = tBoxes().indexOf(b);
+  const items = (b.items||[]);
+  const rows = items.map(it=>{
+    const g = DB.groups.find(x=>x.id===it.groupId);
+    const nm = g? (groupName(g) || 'สินค้าไม่มีชื่อ') : 'สินค้าถูกลบแล้ว';
+    return '<div class="buyrow"><div style="display:flex;gap:10px;align-items:center;flex:1;min-width:0">'
+      + '<img src="' + (g?thumbOf(g):'') + '" style="width:46px;height:46px;border-radius:10px;object-fit:cover;background:var(--pop-soft);flex:none">'
+      + '<div style="min-width:0"><div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(nm) + '</div>'
+      + '<div class="who">ในกล่องนี้ ' + it.qty + ' ชิ้น</div></div></div>'
+      + '<button class="pill" onclick="editBoxItem(\'' + bid + '\',\'' + it.groupId + '\')">แก้จำนวน</button></div>';
+  }).join('') || '<div class="hint" style="text-align:left">ยังไม่มีสินค้าในกล่องนี้ กดปุ่มด้านล่างเพื่อเลือกใส่</div>';
+  shell('<h3>' + esc(b.name || ('กล่อง ' + (idx+1))) + '</h3>'
+    + '<p class="sub">ในกล่องนี้ ' + boxQty(b) + ' ชิ้น · ' + new Set(items.map(i=>i.groupId)).size + ' ชนิด</p>'
+    + '<div class="field"><label>ชื่อกล่อง</label>'
+      + '<input class="tin" id="bxname" value="' + esc(b.name) + '" placeholder="เช่น กล่อง 1 หรือ ของแตกง่าย"></div>'
+    + '<div class="sectionhead"><h2>รูปหน้ากล่อง / ใบจ่าหน้า</h2></div>'
+    + (b.photo
+        ? '<div class="bphoto-wrap"><div class="bphoto"><img src="' + b.photo + '" alt="รูปหน้ากล่อง">'
+          + '<div class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h2.5l1.2-1.8a1 1 0 0 1 .84-.45h6.92a1 1 0 0 1 .84.45L17.5 8H20a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.4"/></svg>'
+          + '<span>รูปนี้จะอยู่ในใบลงกล่อง PDF ด้วย</span>'
+          + '<button class="re" onclick="shootBox(\'' + bid + '\')">เปลี่ยน</button></div></div></div>'
+        : '<div class="bphoto-wrap"><button class="addbphoto" onclick="shootBox(\'' + bid + '\')">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h2.5l1.2-1.8a1 1 0 0 1 .84-.45h6.92a1 1 0 0 1 .84.45L17.5 8H20a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.4"/></svg>'
+          + '<div class="t">＋ เพิ่มรูปหน้ากล่อง</div><div class="s">ถ่ายเลขกล่องหรือใบจ่าหน้า</div></button></div>')
+    + '<div class="sectionhead"><h2>สินค้าในกล่อง</h2></div>' + rows
+    + '<button class="save" style="margin-top:12px" onclick="stashBoxNameThenPick(\'' + bid + '\')">＋ เลือกสินค้าใส่กล่อง</button>'
+    + '<button class="go" onclick="saveBoxName(\'' + bid + '\')">บันทึกชื่อกล่อง</button>'
+    + '<button class="ghost danger" onclick="confirmDeleteBox(\'' + bid + '\')">ลบกล่องนี้</button>'
+    + '<button class="ghost" onclick="closeModal()">ปิด</button>');
+}
+
+async function saveBoxName(bid){
+  const b=DB.boxes.find(x=>x.id===bid);
+  b.name=document.getElementById('bxname').value.trim(); touch(b);
+  await saveMeta(); closeModal(); render(); syncNow(true); toast('บันทึกกล่องแล้ว');
+}
+function confirmDeleteBox(bid){
+  const b=DB.boxes.find(x=>x.id===bid);
+  shell('<h3>ลบกล่องนี้</h3><p class="sub">สินค้าในกล่องจะถูกปล่อยกลับไปเป็น “ยังไม่ลงกล่อง” ไม่ได้ลบออกจากรายการซื้อ</p>'
+    + '<button class="go" style="background:var(--pop)" onclick="deleteBox(\'' + bid + '\')">ยืนยันลบกล่อง</button>'
+    + '<button class="ghost" onclick="openBox(\'' + bid + '\')">ยกเลิก</button>');
+}
+async function deleteBox(bid){
+  const b=DB.boxes.find(x=>x.id===bid); if(!b) return;
+  b.deleted=1; touch(b);
+  await saveMeta(); closeModal(); render(); syncNow(true); toast('ลบกล่องแล้ว');
+}
+
+// เลือกสินค้าจากรายการช้อปปิ้งมาใส่กล่อง
+// เก็บชื่อกล่องที่พิมพ์ค้างไว้ก่อน แล้วค่อยเปิดหน้าเลือกสินค้า (กันชื่อหาย)
+async function stashBoxNameThenPick(bid){
+  const el = document.getElementById('bxname');
+  if(el){
+    const b = DB.boxes.find(x=>x.id===bid);
+    if(b){ const nm = el.value.trim(); if(nm !== (b.name||'')){ b.name = nm; touch(b); await saveMeta(); syncNow(true); } }
+  }
+  pickForBox(bid);
+}
+function pickForBox(bid){
+  const bnow = DB.boxes.find(x=>x.id===bid);
+  const trueRemain = g => Math.max(0, groupBought(g.id) - groupPacked(g.id));  // ยังไม่ลงกล่องไหนเลย
+  const gs = tGroups().filter(g=>trueRemain(g) > 0 || (bnow.items||[]).some(it=>it.groupId===g.id));
+  if(!gs.length){ shell('<h3>เลือกสินค้าใส่กล่อง</h3><p class="sub">สินค้าทุกชิ้นถูกจัดลงกล่องครบแล้ว</p><button class="ghost" onclick="openBox(\'' + bid + '\')">กลับ</button>'); return; }
+  const list = gs.map(g=>{
+    const remain = trueRemain(g);
+    const inThis = ((bnow.items||[]).find(it=>it.groupId===g.id)||{}).qty || 0;
+    return '<div class="pickcard">'
+      + '<button class="pickmain" onclick="addToBox(\'' + bid + '\',\'' + g.id + '\')">'
+      + '<img class="th" src="' + thumbOf(g) + '">'
+      + '<div class="body"><div class="nm">' + esc(groupName(g) || 'สินค้าไม่มีชื่อ') + '</div>'
+      + '<div class="meta">เหลือใส่ได้ ' + remain + ' ชิ้น' + (inThis? ' · อยู่ในกล่องนี้แล้ว ' + inThis : '') + '</div></div></button>'
+      + (remain>0 ? '<button class="allbtn" onclick="addAllToBox(\'' + bid + '\',\'' + g.id + '\')">＋ ทั้งหมด ' + remain + '</button>' : '')
+      + '</div>';
+  }).join('');
+  shell('<h3>เลือกสินค้าใส่กล่อง</h3><p class="sub">แตะที่สินค้าเพื่อใส่จำนวนเอง หรือกดปุ่มชมพู “ทั้งหมด” เพื่อใส่จำนวนที่เหลือรวดเดียว</p>'
+    + list + '<button class="ghost" onclick="openBox(\'' + bid + '\')">กลับ</button>');
+}
+
+function addToBox(bid, gid){
+  const b=DB.boxes.find(x=>x.id===bid);
+  const remain = groupRemain(gid, bid);
+  const cur = (b.items||[]).find(it=>it.groupId===gid);
+  // เริ่มด้วยค่าว่าง ถ้ายังไม่เคยใส่ / ถ้าเคยใส่แล้วโชว์ค่าเดิม
+  qtyDialog(bid, gid, cur ? cur.qty : '', remain);
+}
+// ใส่จำนวนที่เหลือทั้งหมดรวดเดียว
+async function addAllToBox(bid, gid){
+  // ที่เหลือจริง = ซื้อมา − ที่ลงกล่องไปแล้วทุกกล่อง (รวมกล่องนี้ด้วย)
+  const remainAll = Math.max(0, groupBought(gid) - groupPacked(gid));
+  if(remainAll<=0){ toast('สินค้านี้ลงกล่องครบแล้ว'); return; }
+  const b=DB.boxes.find(x=>x.id===bid);
+  const cur=(b.items||[]).find(it=>it.groupId===gid);
+  const add = (cur?cur.qty:0) + remainAll;   // ของเดิมในกล่องนี้ + ที่ยังเหลือ
+  b.items=(b.items||[]).filter(it=>it.groupId!==gid);
+  b.items.push({groupId:gid, qty:add});
+  touch(b);
+  await saveMeta(); render(); syncNow(true); pickForBox(bid);
+  toast('ใส่ทั้งหมด ' + remainAll + ' ชิ้นลงกล่องแล้ว');
+}
+function editBoxItem(bid, gid){
+  const b=DB.boxes.find(x=>x.id===bid);
+  const cur=(b.items||[]).find(it=>it.groupId===gid);
+  qtyDialog(bid, gid, cur?cur.qty:'', groupRemain(gid, bid));
+}
+function qtyDialog(bid, gid, val, remain){
+  const g=DB.groups.find(x=>x.id===gid);
+  shell('<h3>' + esc(groupName(g) || 'สินค้าไม่มีชื่อ') + '</h3>'
+    + '<p class="sub">เหลือใส่ได้สูงสุด ' + remain + ' ชิ้น (ซื้อมา ' + groupBought(gid) + ' ลงกล่องอื่นแล้ว ' + groupPacked(gid, bid) + ')</p>'
+    + '<img src="' + thumbOf(g) + '" style="width:100%;max-height:30vh;object-fit:contain;background:var(--pop-soft);border-radius:14px" alt="">'
+    + '<div class="field"><label>จำนวนที่ใส่กล่องนี้</label>'
+      + '<div class="stepper"><button onclick="bxBump(-1,' + remain + ')" aria-label="ลด">−</button>'
+      + '<input id="bxq" inputmode="numeric" placeholder="0" value="' + val + '" oninput="bxClamp(' + remain + ')">'
+      + '<button onclick="bxBump(1,' + remain + ')" aria-label="เพิ่ม">＋</button></div>'
+      + '<div class="hint" id="bxwarn" style="text-align:left"></div></div>'
+    + '<button class="go" onclick="submitBoxItem(\'' + bid + '\',\'' + gid + '\',' + remain + ')">ใส่ลงกล่อง</button>'
+    + ((DB.boxes.find(x=>x.id===bid).items||[]).some(it=>it.groupId===gid)
+        ? '<button class="ghost danger" onclick="removeBoxItem(\'' + bid + '\',\'' + gid + '\')">เอาออกจากกล่อง</button>' : '')
+    + '<button class="ghost" onclick="pickForBox(\'' + bid + '\')">กลับ</button>');
+}
+function bxBump(d, max){ const q=document.getElementById('bxq'); q.value=Math.max(0,Math.min(max,(parseInt(q.value)||0)+d)); bxClamp(max); }
+function bxClamp(max){
+  const q=document.getElementById('bxq'); let v=parseInt(q.value)||0;
+  const w=document.getElementById('bxwarn');
+  if(v>max){ v=max; q.value=max; w.textContent='ใส่ได้มากสุด ' + max + ' ชิ้น ตามจำนวนที่ซื้อมา'; w.style.color='var(--pop)'; }
+  else { w.textContent=''; }
+}
+async function submitBoxItem(bid, gid, remain){
+  let q=parseInt(document.getElementById('bxq').value)||0;
+  if(q>remain) q=remain;
+  const b=DB.boxes.find(x=>x.id===bid);
+  b.items=(b.items||[]).filter(it=>it.groupId!==gid);
+  if(q>0) b.items.push({groupId:gid, qty:q});
+  touch(b);
+  await saveMeta(); render(); syncNow(true); openBox(bid);
+  toast(q>0 ? 'ใส่ ' + q + ' ชิ้นลงกล่องแล้ว' : 'เอาออกจากกล่องแล้ว');
+}
+async function removeBoxItem(bid, gid){
+  const b=DB.boxes.find(x=>x.id===bid);
+  b.items=(b.items||[]).filter(it=>it.groupId!==gid); touch(b);
+  await saveMeta(); render(); syncNow(true); openBox(bid); toast('เอาออกจากกล่องแล้ว');
+}
+
+function viewExport(){
+  const es=tEntries();
+  if(!es.length) return '<div class="wrap"><div class="empty"><b>ยังไม่มีอะไรให้ส่งออก</b>บันทึกสินค้าอย่างน้อย 1 ชิ้นก่อน แล้วกลับมาสร้างเอกสาร</div></div>';
+  const qty  = es.reduce((a,e)=>a+num(e.qty),0);
+  const boxes = tBoxes().filter(b=>boxQty(b)>0);
+  const packedQty = boxes.reduce((a,b)=>a+boxQty(b),0);
+  return '<div class="wrap">'
+    + '<div class="stats">'
+      + '<div class="stat"><div class="si">▤</div><u>ชนิดสินค้า</u><b>' + tGroups().length + '</b></div>'
+      + '<div class="stat"><div class="si">▧</div><u>จำนวนชิ้น</u><b>' + qty + '</b></div>'
+      + '<div class="stat"><div class="si">▦</div><u>จัดลงกล่อง</u><b>' + boxes.length + '</b></div></div>'
+    + '<div class="sectionhead"><h2>เอกสารสำหรับปริ้น</h2><em>PDF ขนาด A4</em></div>'
+    + '<div class="acard">'
+      + '<div class="ah"><div class="aic">▤</div><div class="at">ใบตรวจรับสินค้า</div></div>'
+      + '<div class="ameta">แยกหน้าใหม่ทุกวัน มียอดรวมท้ายวัน รูปใหญ่ พร้อมช่องติ๊กครบ จำนวนรับจริง ขาด/เกิน และหมายเหตุ — สำหรับตรวจของตอนมาถึงไทย</div>'
+      + '<button class="save" onclick="makePDF(\'receiving\',this)">สร้างใบตรวจรับ</button></div>'
+    + '<div class="acard c2">'
+      + '<div class="ah"><div class="aic">▧</div><div class="at">ใบลงกล่อง (Packing List)</div></div>'
+      + (boxes.length
+          ? '<div class="ameta">แยกหน้าใหม่ทุกกล่อง มีรูปสินค้าและจำนวนในกล่องนั้น ' + boxes.length + ' กล่อง รวม ' + packedQty + ' ชิ้น — สำหรับยื่นชิปปิ้ง</div>'
+            + '<button class="save" onclick="makePDF(\'packing\',this)">สร้างใบลงกล่อง</button>'
+          : '<div class="ameta">ยังไม่ได้จัดของลงกล่อง ไปที่แท็บ “กล่อง” เพื่อจัดของก่อน แล้วปุ่มสร้างจะปรากฏที่นี่</div>'
+            + '<button class="save" style="background:var(--ink2);box-shadow:none" onclick="tab=\'box\';render()">ไปหน้าจัดกล่อง</button>')
+      + '</div>'
+    + (boxes.length
+        ? '<div class="acard c3"><div class="ah"><div class="aic">⎘</div><div class="at">ทั้งสองแบบในไฟล์เดียว</div></div>'
+          + '<div class="ameta">ใบตรวจรับตามด้วยใบลงกล่อง รวมในไฟล์ PDF เดียว สะดวกเวลาส่งต่อ</div>'
+          + '<button class="save" style="background:var(--plum);box-shadow:0 3px 0 #7C3AED" onclick="makePDF(\'both\',this)">สร้างทั้งสองแบบ</button></div>'
+        : '')
+    + '<div class="hint">ถ้าซิงก์กับเซิร์ฟเวอร์ ระบบจะดึงรูปจากเครื่องอื่นมาให้ครบก่อนสร้างไฟล์</div></div>';
+}
+
+
+
+
+
+/* ---------- actions ---------- */
+function bump(d){ const q=document.getElementById('qty'); q.value=Math.max(1,(parseInt(q.value)||1)+d); recalc(); }
+function resetForm(){ form={name:'', cost:'', qty:'1'}; saveDraft(); }
+function onName(){ const el=document.getElementById('pname'); if(el){ form.name=el.value; saveDraft(); } }
+function recalc(){
+  form.cost = document.getElementById('cost').value;
+  form.qty  = document.getElementById('qty').value;
+  const nm=document.getElementById('pname'); if(nm) form.name=nm.value;
+  saveDraft();
+  const c=parseFloat(form.cost)||0;
+  const q=parseInt(form.qty)||0;
+  document.getElementById('sum').textContent = money(c*q);
+  document.getElementById('sumthb').textContent = '≈ ' + thb(c*q);
+  document.getElementById('saveBtn').disabled = !(draft && c>0 && q>0);
+}
+const shoot = () => document.getElementById('cam').click();
+const pickPhoto = () => document.getElementById('pick').click();
+async function handlePhotoFile(f){
+  if(!f) return;
+  toast('กำลังย่อรูป…');
+  try{ draft = await processPhoto(f); saveDraft(); render();
+    setTimeout(()=>{ const c=document.getElementById('cost'); if(c&&!c.value) c.focus(); },60);
+  }catch(e){ toast('เปิดรูปไม่ได้ ลองใหม่อีกครั้ง'); }
+}
+document.getElementById('cam').addEventListener('change', ev=>{
+  const f=ev.target.files[0]; ev.target.value=''; handlePhotoFile(f);
+});
+document.getElementById('pick').addEventListener('change', ev=>{
+  const f=ev.target.files[0]; ev.target.value=''; handlePhotoFile(f);
+});
+// ---- รูปหน้ากล่อง ----
+let boxPhotoTarget = null;
+function shootBox(bid){ boxPhotoTarget = bid; document.getElementById('boxcam').click(); }
+async function processBoxPhoto(file){
+  const url = URL.createObjectURL(file);
+  const img = await loadImg(url);
+  const s = Math.min(1, 900/Math.max(img.width,img.height));
+  const c = document.createElement('canvas');
+  c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  URL.revokeObjectURL(url);
+  return c.toDataURL('image/jpeg',.7);
+}
+document.getElementById('boxcam').addEventListener('change', async ev=>{
+  const f=ev.target.files[0]; ev.target.value=''; if(!f||!boxPhotoTarget) return;
+  const bid = boxPhotoTarget; boxPhotoTarget=null;
+  toast('กำลังย่อรูป…');
+  try{
+    const photo = await processBoxPhoto(f);
+    const b = DB.boxes.find(x=>x.id===bid); if(!b) return;
+    b.photo = photo; touch(b);
+    await saveMeta(); render(); syncNow(true); openBox(bid); toast('เพิ่มรูปกล่องแล้ว');
+  }catch(e){ toast('เปิดรูปไม่ได้ ลองใหม่อีกครั้ง'); }
+});
+let draftTimer=null;
+function saveDraft(){
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(()=>{ S.set('suru:draft', draft ? {...draft, form} : (form.cost? {form} : null)); }, 400);
+}
+async function restoreDraft(){
+  const d = await S.get('suru:draft');
+  if(!d) return;
+  if(d.form) form = d.form;
+  if(d.full) draft = {full:d.full, thumb:d.thumb, hash:d.hash, barcode:d.barcode};
+}
+async function doSave(){
+  const c=parseFloat(document.getElementById('cost').value)||0;
+  const q=parseInt(document.getElementById('qty').value)||0;
+  const nm=(document.getElementById('pname')||{}).value||'';
+  if(!draft||c<=0||q<=0) return;
+  const shot = draft;
+  draft = null;
+  // สั่งเปิดกล้องต่อในจังหวะเดียวกับที่นิ้วแตะ ก่อนงานบันทึกเบื้องหลัง
+  if(DB.autoShot) shoot();
+  resetForm(); render();
+  await savePurchase(c, q, shot, nm);
+  render(); toast('บันทึกแล้ว · ' + money(c*q));
+}
+
+/* ---------- modals ---------- */
+const closeModal = () => { document.getElementById('modal').innerHTML=''; };
+const shell = html => { document.getElementById('modal').innerHTML =
+  `<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="sheet">${html}</div></div>`; };
+
+function openTrip(){
+  const opts = CURRENCIES.map(c=>`<option value="${c.code}">${c.code} ${c.sym}</option>`).join('');
+  const list = live(DB.trips).map(t=>`<button class="pill" style="margin:0 6px 6px 0;${t.id===DB.activeTrip?'background:var(--pop);color:#fff;border-color:var(--pop)':''}"
+      onclick="pickTrip('${t.id}')">${esc(t.name)}</button>`).join('');
+  shell(`<h3>ทริป</h3><p class="sub">แต่ละทริปมีรหัสของตัวเอง ใช้รหัสนี้ให้เครื่องอื่นเข้าร่วมได้</p>
+    ${live(DB.trips).length?`<div style="margin-bottom:14px">${list}</div>`:''}
+    <div class="field"><label>สร้างทริปใหม่</label>
+      <input class="tin" id="tn" placeholder="ชื่อทริป เช่น โตเกียว ก.ค. 2026">
+      <div class="two" style="margin-top:10px">
+        <select class="tin" id="tc">${opts}</select>
+        <input class="tin" id="tr" inputmode="decimal" placeholder="เรทเป็นบาท" value="0.23"></div>
+      <button class="go" onclick="newTrip()">สร้างและเริ่มบันทึก</button></div>
+    <div class="field"><label>เข้าร่วมทริปที่มีอยู่</label>
+      <input class="tin" id="jc" placeholder="กรอกรหัสทริป เช่น TKY7F3" style="text-transform:uppercase">
+      <button class="go" style="background:var(--pop)" onclick="joinTrip()">เข้าร่วมทริป</button>
+      <div class="hint" style="text-align:left">ต้องตั้งค่าเซิร์ฟเวอร์ในหน้า ⚙ ก่อน</div></div>
+    <button class="ghost" onclick="closeModal()">ปิด</button>`);
+  const sel=document.getElementById('tc');
+  sel.onchange = () => { document.getElementById('tr').value = CURRENCIES.find(c=>c.code===sel.value).rate; };
+}
+function tripCode(name){
+  const base = (norm(name).replace(/[^a-z0-9]/g,'').toUpperCase()+'TRIP').slice(0,3);
+  return base + Math.random().toString(36).slice(2,5).toUpperCase();
+}
+async function newTrip(){
+  const name = document.getElementById('tn').value.trim() || 'ทริปใหม่';
+  const currency = document.getElementById('tc').value;
+  const rate = parseFloat(document.getElementById('tr').value) || CURRENCIES.find(c=>c.code===currency).rate;
+  const t = touch({ id: tripCode(name), name, currency, rate, createdAt:new Date().toISOString() });
+  DB.trips.push(t); DB.activeTrip=t.id; DB.sync[t.id]=0;
+  await saveMeta(); closeModal(); tab='add'; render(); syncNow(true);
+  toast('เริ่มทริป ' + name + ' · รหัส ' + t.id);
+}
+async function joinTrip(){
+  const code = document.getElementById('jc').value.trim().toUpperCase();
+  if(!code) return;
+  if(!DB.server){ toast('ตั้งค่าเซิร์ฟเวอร์ในหน้า ⚙ ก่อน'); return; }
+  DB.activeTrip = code; DB.sync[code] = 0;
+  await saveMeta(); closeModal(); render();
+  try{
+    await syncNow(false);
+    if(!trip()){ toast('ไม่พบทริปรหัสนี้ ลองตรวจตัวอักษรอีกครั้ง'); DB.activeTrip=null; await saveMeta(); render(); }
+    else { tab='list'; render(); toast('เข้าร่วมทริป ' + trip().name + ' แล้ว'); }
+  }catch(e){ toast('เข้าร่วมไม่สำเร็จ: ' + e.message); }
+}
+async function pickTrip(id){ DB.activeTrip=id; await saveMeta(); closeModal(); render(); syncNow(true); }
+
+async function openGroup(gid){
+  const g = DB.groups.find(x=>x.id===gid); if(!g) return;
+  const s = groupStats(g);
+  const buys = s.es.map(e=>{
+    const d=new Date(e.createdAt);
+    return `<div class="buyrow"><div>
+        <div>${money(e.cost)} × ${e.qty} = <b>${money(e.total)}</b></div>
+        <div class="who">${d.toLocaleDateString('th-TH',{day:'2-digit',month:'short'})} ${d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}${e.by?' · '+esc(e.by):''}</div>
+      </div><div style="display:flex;gap:6px">
+        <button class="pill" onclick="openEntry('${e.id}')">แก้ไข</button></div></div>`;
+  }).join('');
+  const others = tGroups().filter(x=>x.id!==gid);
+  shell(`<h3>รายละเอียดสินค้า</h3><p class="sub">${s.qty} ชิ้น · เฉลี่ย ${money(s.avg)}/ชิ้น · รวม ${money(s.sum)}</p>
+    <img id="gimg" src="${thumbOf(g)}" style="width:100%;max-height:34vh;object-fit:contain;background:var(--pop-soft);border-radius:12px;filter:blur(1px)" alt="">
+    <div class="field"><label>ชื่อสินค้า</label>
+      <input class="tin" id="gn" value="${esc(groupName(g))}" placeholder="พิมพ์ชื่อสินค้า"></div>
+    <div class="field"><label>บันทึก / หมายเหตุ</label>
+      <input class="tin" id="gnote" value="${esc(g.note||'')}" placeholder="เช่น ของแตกง่าย, ฝากเพื่อน, ตรวจก่อนแพ็ก">
+      <div class="hint" style="text-align:left">ข้อความนี้จะไปอยู่ในช่อง “บันทึก” ของใบรายการสินค้าตอนปริ้น</div></div>
+    <div class="sectionhead"><h2>การซื้อ ${s.buys} ครั้ง</h2></div>${buys}
+    ${others.length?`<div class="field"><label>รวมกับรายการอื่น</label>
+      <select class="tin" id="mg"><option value="">— เลือกรายการที่จะรวมเข้ามา —</option>
+      ${others.map(o=>`<option value="${o.id}">${esc(groupName(o)||'ยังไม่มีชื่อ')} · ${groupStats(o).qty} ชิ้น</option>`).join('')}</select>
+      <button class="ghost" style="background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:8px"
+        onclick="doMergeSelect('${gid}')">รวมเข้ารายการนี้</button></div>`:''}
+    <button class="go" onclick="saveGroupName('${gid}')">บันทึกชื่อ</button>
+    <button class="ghost danger" onclick="confirmDeleteGroup('${gid}')">ลบสินค้านี้ทั้งหมด</button>
+    <button class="ghost" onclick="closeModal()">ปิด</button>`);
+  const full = await getPhoto((gEntriesSorted(g.id)[0]||{}).id);
+  const el = document.getElementById('gimg');
+  if(full && el){ el.src = full; el.style.filter='none'; }
+}
+async function saveGroupName(gid){
+  const g=DB.groups.find(x=>x.id===gid);
+  g.name = document.getElementById('gn').value.trim();
+  g.note = document.getElementById('gnote').value.trim(); touch(g);
+  await saveMeta(); closeModal(); render(); syncNow(true); toast('บันทึกแล้ว');
+}
+function confirmDeleteGroup(gid){
+  const g=DB.groups.find(x=>x.id===gid); const s=groupStats(g);
+  shell(`<h3>ลบสินค้านี้</h3><p class="sub">จะลบการซื้อทั้ง ${s.buys} ครั้ง รวม ${s.qty} ชิ้น ออกจากทุกเครื่องที่ใช้ทริปนี้</p>
+    <button class="go" style="background:var(--pop)" onclick="deleteGroup('${gid}')">ยืนยันลบ</button>
+    <button class="ghost" onclick="openGroup('${gid}')">ยกเลิก</button>`);
+}
+async function doMergeSelect(gid){
+  const v=document.getElementById('mg').value; if(!v) return;
+  closeModal(); await mergeGroups(gid,v);
+}
+function openEntry(id){
+  const e = DB.entries.find(x=>x.id===id); if(!e) return;
+  const d = new Date(e.createdAt);
+  shell(`<h3>แก้ไขการซื้อ</h3><p class="sub">${d.toLocaleDateString('th-TH')} ${d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}${e.by?' · บันทึกโดย '+esc(e.by):''}</p>
+    <div class="field"><label>ต้นทุนต่อชิ้น (${cur().code})</label>
+      <input class="tin" id="ec" inputmode="decimal" value="${e.cost}"></div>
+    <div class="field"><label>จำนวน</label>
+      <input class="tin" id="eq" inputmode="numeric" value="${e.qty}"></div>
+    <button class="go" onclick="submitEntry('${id}')">บันทึกการแก้ไข</button>
+    <button class="ghost" style="background:#fff;border:1px solid var(--line);color:var(--ink)" onclick="splitEntry('${id}')">แยกออกเป็นสินค้าใหม่</button>
+    <button class="ghost danger" onclick="deleteEntry('${id}').then(closeModal)">ลบการซื้อครั้งนี้</button>
+    <button class="ghost" onclick="openGroup('${e.groupId}')">ย้อนกลับ</button>`);
+}
+async function submitEntry(id){
+  const c=parseFloat(document.getElementById('ec').value)||0;
+  const q=parseInt(document.getElementById('eq').value)||0;
+  if(c<=0||q<=0){ toast('ต้นทุนและจำนวนต้องมากกว่า 0'); return; }
+  await updateEntry(id,c,q); closeModal();
+}
+
+function openSettings(){
+  const where = BACKEND==='claude'?'หน้าต่าง Claude' : BACKEND==='idb'?'IndexedDB บนเครื่องนี้' : 'หน่วยความจำชั่วคราว';
+  const pending = DB.server ? dirtyRecords(DB.activeTrip).length : 0;
+  const sstat = !DB.server ? 'ยังไม่ได้ตั้งค่า ใช้งานแบบเครื่องเดียว'
+    : pending ? `รอส่งขึ้นเซิร์ฟเวอร์ ${pending} รายการ`
+    : lastSyncOk ? 'ซิงก์ล่าสุด ' + new Date(lastSyncOk).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : 'ยังไม่ได้ซิงก์';
+  shell(`<h3>ตั้งค่า</h3><p class="sub">ข้อมูลเก็บที่ ${where} · ${sstat}</p>
+    ${memOnly?'<div class="suggest" style="border-color:var(--pop);background:#FCE4E8"><b style="font-size:14px">ข้อมูลจะหายเมื่อปิดแท็บ</b><div style="font-size:12px;margin-top:2px">เบราว์เซอร์นี้ไม่อนุญาตให้เก็บข้อมูลถาวร ลองปิดโหมดส่วนตัว</div></div>':''}
+    ${trip()?`<div class="field"><label>รหัสทริปนี้ (ให้เครื่องอื่นใช้เข้าร่วม)</label><div class="code">${esc(trip().id)}</div></div>`:''}
+    <div class="field"><label>ที่อยู่เซิร์ฟเวอร์</label>
+      <input class="tin" id="sv" value="${esc(DB.server)}" placeholder="https://xxx.workers.dev"></div>
+    <div class="field"><label>รหัสผ่านเซิร์ฟเวอร์</label>
+      <input class="tin" id="tk" value="${esc(DB.token)}" placeholder="ตั้งไว้ใน APP_TOKEN"></div>
+    <div class="field"><label>ชื่อเครื่องนี้</label>
+      <input class="tin" id="dn" value="${esc(DB.deviceName)}" placeholder="เช่น มือถือพี่หนู"></div>
+    <button class="go" onclick="saveSettings()">บันทึกการตั้งค่า</button>
+    <button class="ghost" style="background:#fff;border:1px solid var(--line);color:var(--ink)" onclick="syncNow(false)">ซิงก์เดี๋ยวนี้</button>
+    <div class="field"><label>สำรองข้อมูล</label>
+      <div class="two">
+        <button class="pill" style="padding:14px" onclick="backupJSON()">ดาวน์โหลดไฟล์สำรอง</button>
+        <button class="pill" style="padding:14px" onclick="document.getElementById('restoreFile').click()">กู้คืนจากไฟล์</button></div>
+      <div class="hint" style="text-align:left">ไฟล์ .json มีทั้งรายการและรูปทุกใบ กู้คืนแบบรวมกับของเดิม ไม่เขียนทับ</div></div>
+    <button class="ghost" onclick="closeModal()">ปิด</button>`);
+}
+async function saveSettings(){
+  DB.server = document.getElementById('sv').value.trim().replace(/\/$/,'');
+  DB.token  = document.getElementById('tk').value.trim();
+  DB.deviceName = document.getElementById('dn').value.trim() || DB.deviceName;
+  await saveMeta(); closeModal(); render(); toast('บันทึกการตั้งค่าแล้ว');
+  syncNow(false);
+}
+document.getElementById('gearBtn').onclick = openSettings;
+document.getElementById('tripChip').onclick = openTrip;
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{ tab=b.dataset.tab; render(); window.scrollTo(0,0); });
+
+/* ---------- สำรอง / กู้คืน ---------- */
+function download(name, blob){
+  const u=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=u; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ a.remove(); URL.revokeObjectURL(u); },1000);
+}
+async function backupJSON(){
+  const ids = DB.entries.filter(e=>!e.deleted).map(e=>e.id);
+  const photos={}; for(const id of ids){ const p=await getPhoto(id); if(p) photos[id]=p; }
+  download(`SURU_backup_${(trip()?.name||'all').replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.json`,
+    new Blob([JSON.stringify({app:'SURU', v:2, savedAt:new Date().toISOString(), db:DB, photos})],{type:'application/json'}));
+  toast('สำรองข้อมูลแล้ว');
+}
+async function restoreJSON(file){
+  try{
+    const j = JSON.parse(await file.text());
+    if(!j.db) throw new Error('รูปแบบไฟล์ไม่ถูกต้อง');
+    let added=0;
+    for(const key of ['trips','groups','entries']){
+      (j.db[key]||[]).forEach(inc=>{
+        const i = DB[key].findIndex(x=>x.id===inc.id);
+        if(i<0){ DB[key].push(inc); added++; }
+        else if((inc.updated||0) > (DB[key][i].updated||0)) DB[key][i]=inc;
+      });
+    }
+    for(const [id,data] of Object.entries(j.photos||{})) await putPhoto(id,data);
+    if(!trip() && j.db.activeTrip) DB.activeTrip = j.db.activeTrip;
+    await saveMeta(); closeModal(); render(); syncNow(true);
+    toast(`กู้คืนแล้ว เพิ่มใหม่ ${added} รายการ`);
+  }catch(e){ toast('กู้คืนไม่สำเร็จ: ' + e.message); }
+}
+document.getElementById('restoreFile').addEventListener('change', ev=>{
+  const f=ev.target.files[0]; ev.target.value=''; if(f) restoreJSON(f);
+});
+
+/* =========================================================
+   PDF
+   ========================================================= */
+function dhead(title){
+  return `<div class="dhead"><div><div class="dt">${esc(title)}</div>
+    <div class="dtrip">ทริป ${esc(trip().name)}</div></div><div class="brand">Suru</div></div>`;
+}
+function dfoot(page, pages){ return `<div class="dfoot">หน้า ${page} / ${pages}</div>`; }
+
+const chunkArr=(a,n)=>{ const o=[]; for(let i=0;i<a.length;i+=n) o.push(a.slice(i,i+n)); return o; };
+const pic = id => PCACHE[id] || '';
+
+function dayKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dayLabel(d){ return d.toLocaleDateString('th-TH',{weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
+const ROWS_PER_PAGE = 5;
+
+// ===== ใบรายการสินค้า (รับของ) =====
+function buildDetail(){
+  const es = tEntries().filter(e=>num(e.qty)>0 || num(e.cost)>0).slice().sort(cmpTime);
+  const days = [];
+  es.forEach(e=>{
+    const d = new Date(e.createdAt), k = dayKey(d);
+    let g = days.find(x=>x.k===k);
+    if(!g){ g = {k, label: dayLabel(d), items:[]}; days.push(g); }
+    g.items.push(e);
+  });
+  const sheets = [];
+  days.forEach(g=>{
+    const parts = chunkArr(g.items, ROWS_PER_PAGE);
+    parts.forEach((rows,i)=> sheets.push({g, rows, first:i===0, last:i===parts.length-1, part:i+1, parts:parts.length}));
+  });
+  const kinds = tGroups().length;
+  const gQty = es.reduce((a,e)=>a+num(e.qty),0);
+  const gSum = es.reduce((a,e)=>a+num(e.total),0);
+
+  return sheets.map((sh,si)=>{
+    let n = sh.rows.length ? sh.g.items.indexOf(sh.rows[0]) : 0;
+    const rows = sh.rows.map(e=>{
+      n++;
+      const g = DB.groups.find(x=>x.id===e.groupId);
+      const note = g && g.note ? esc(g.note) : '';
+      return '<tr>'
+        + '<td>' + n + '</td>'
+        + '<td class="photo"><img src="' + (pic(e.id)||e.thumb) + '"></td>'
+        + '<td class="cost">' + money(e.cost) + '</td>'
+        + '<td><span class="q">' + e.qty + '</span></td>'
+        + '<td class="tot">' + money(e.total) + '</td>'
+        + (note ? '<td class="l">' + note + '</td>' : '<td class="blank"></td>')
+        + '</tr>';
+    }).join('');
+    const dQty = sh.g.items.reduce((a,e)=>a+num(e.qty),0);
+    const dSum = sh.g.items.reduce((a,e)=>a+num(e.total),0);
+    const summary = sh.first
+      ? '<div class="dsum">'
+        + '<div class="dsc"><u>สินค้าทั้งหมด</u><b>' + kinds + ' รายการ</b></div>'
+        + '<div class="dsc"><u>จำนวนรวม</u><b>' + gQty + ' ชิ้น</b></div>'
+        + '<div class="dsc"><u>ยอดรวมทั้งสิ้น</u><b>' + money(gSum) + '</b></div></div>'
+      : '';
+    return '<div class="page">'
+      + dhead('ใบรายการสินค้า')
+      + summary
+      + '<div class="dgrp"><div class="gl">' + esc(sh.g.label)
+        + '<span>' + sh.g.items.length + ' รายการ · ' + dQty + ' ชิ้น'
+        + (sh.parts>1 ? ' · หน้า ' + sh.part + '/' + sh.parts : '') + '</span></div>'
+        + '<div class="gr">ยอดรวมวันนี้<b>' + money(dSum) + '</b></div></div>'
+      + '<table class="pt"><colgroup>'
+        + '<col style="width:44px"><col style="width:150px"><col style="width:120px"><col style="width:90px"><col style="width:130px"><col></colgroup>'
+      + '<tr><th>#</th><th>รูปสินค้า</th><th>ต้นทุน/ชิ้น</th><th>จำนวน</th><th>ยอดรวม</th><th>บันทึก</th></tr>'
+      + rows + '</table>'
+      + dfoot(si+1, sheets.length)
+      + '</div>';
+  }).join('');
+}
+
+// ===== ใบลงกล่อง: หน้าสรุป + หน้าแต่ละกล่อง =====
+function buildPackingList(){
+  const boxes = tBoxes().filter(b=>boxQty(b)>0);
+  if(!boxes.length) return '';
+  const kinds = new Set();
+  boxes.forEach(b=>(b.items||[]).forEach(it=>kinds.add(it.groupId)));
+  const totalQty = boxes.reduce((a,b)=>a+boxQty(b),0);
+  const nameOf = gid => { const g=DB.groups.find(x=>x.id===gid); return g?(groupName(g)||'สินค้าไม่มีชื่อ'):'(สินค้าถูกลบ)'; };
+
+  // ---- หน้าสรุป (อาจมีหลายหน้าถ้ากล่องเยอะ) ----
+  const BLOCKS_PER = 5;
+  const boxNamed = boxes.map((b,i)=>({b, label: b.name || ('กล่อง ' + (i+1))}));
+  const sumPages = chunkArr(boxNamed, BLOCKS_PER);
+
+  // ---- หน้ารายละเอียดแต่ละกล่อง ----
+  const PER = 6;
+  const detailSheets = [];
+  boxNamed.forEach(({b,label})=>{
+    const parts = chunkArr(b.items||[], PER);
+    (parts.length?parts:[[]]).forEach((items,pi)=> detailSheets.push({b, label, items, part:pi+1, parts:parts.length||1, last:pi===((parts.length||1)-1)}));
+  });
+
+  const totalPages = sumPages.length + detailSheets.length;
+  let pageNo = 0;
+  const out = [];
+
+  // สรุป
+  sumPages.forEach((grp,gi)=>{
+    pageNo++;
+    const blocks = grp.map(({b,label})=>{
+      const items = (b.items||[]).map(it=>
+        '<div class="bxi"><span class="bin">' + esc(nameOf(it.groupId)) + '</span><span class="biq">' + it.qty + '</span></div>').join('');
+      const kn = new Set((b.items||[]).map(i=>i.groupId)).size;
+      return '<div class="bxblock"><div class="bxh"><span class="bn">' + esc(label) + '</span>'
+        + '<span class="bq">' + kn + ' ชนิด · ' + boxQty(b) + ' ชิ้น</span></div>' + items + '</div>';
+    }).join('');
+    out.push('<div class="page">'
+      + dhead('ใบลงกล่อง')
+      + (gi===0 ? '<div class="dsum">'
+          + '<div class="dsc"><u>จำนวนกล่อง</u><b>' + boxes.length + ' กล่อง</b></div>'
+          + '<div class="dsc"><u>สินค้าทั้งหมด</u><b>' + kinds.size + ' รายการ</b></div>'
+          + '<div class="dsc"><u>จำนวนรวม</u><b>' + totalQty + ' ชิ้น</b></div></div>' : '')
+      + '<div class="dsec">รายการแต่ละกล่อง</div>'
+      + blocks
+      + dfoot(pageNo, totalPages) + '</div>');
+  });
+
+  // รายละเอียดกล่อง
+  detailSheets.forEach(sh=>{
+    pageNo++;
+    let n = sh.items.length ? (sh.b.items||[]).indexOf(sh.items[0]) : 0;
+    const rows = sh.items.map(it=>{
+      n++;
+      const g = DB.groups.find(x=>x.id===it.groupId);
+      return '<tr>'
+        + '<td>' + n + '</td>'
+        + '<td class="photo"><img src="' + (g?(pic((gEntriesSorted(g.id)[0]||{}).id)||thumbOf(g)):'') + '"></td>'
+        + '<td class="l"><span class="nm">' + esc(nameOf(it.groupId)) + '</span></td>'
+        + '<td><span class="q">' + it.qty + '</span></td>'
+        + '<td><div class="chk"></div></td></tr>';
+    }).join('');
+    const kn = new Set((sh.b.items||[]).map(i=>i.groupId)).size;
+    const boxPhoto = (sh.first!==false && sh.part===1 && sh.b.photo)
+      ? '<div class="bxphoto"><img src="' + sh.b.photo + '"><div class="bxphoto-cap"><b>รูปหน้ากล่อง / ใบจ่าหน้า</b>ถ่ายไว้ให้รู้ว่าสินค้ามาจากกล่องไหน</div></div>'
+      : '';
+    out.push('<div class="page">'
+      + dhead('ใบลงกล่อง')
+      + '<div class="dgrp"><div class="gl">' + esc(sh.label)
+        + '<span>' + kn + ' ชนิด' + (sh.parts>1?' · หน้า '+sh.part+'/'+sh.parts:'') + '</span></div>'
+        + '<div class="gr">รวมในกล่อง<b>' + boxQty(sh.b) + ' ชิ้น</b></div></div>'
+      + boxPhoto
+      + '<table class="pt"><colgroup>'
+        + '<col style="width:44px"><col style="width:150px"><col><col style="width:90px"><col style="width:70px"></colgroup>'
+      + '<tr><th>#</th><th>รูปสินค้า</th><th>ชื่อสินค้า</th><th>จำนวน</th><th>เช็ค</th></tr>'
+      + rows + '</table>'
+      + dfoot(pageNo, totalPages) + '</div>');
+  });
+
+  return out.join('');
+}
+
+async function makePDF(kind, btn){
+  const label=btn.textContent; btn.disabled=true;
+  btn.textContent='กำลังเตรียมรูป…';
+  const stage=document.getElementById('stage');
+  try{
+    let ids = [];
+    if(kind!=='packing') ids = ids.concat(tEntries().map(e=>e.id));
+    if(kind!=='receiving') tBoxes().forEach(b=>(b.items||[]).forEach(it=>{ const e=gEntries(it.groupId)[0]; if(e) ids.push(e.id); }));
+    let missing = 0;
+    try{ missing = await pullPhotos([...new Set(ids)]); }catch(e){ missing = 0; }
+    if(missing) toast('ขาดรูป ' + missing + ' ใบ จะใช้รูปย่อแทน');
+
+    btn.textContent='กำลังสร้าง PDF…';
+    const parts=[];
+    if(kind!=='packing')   parts.push(buildDetail());
+    if(kind!=='receiving') parts.push(buildPackingList());
+    stage.innerHTML = parts.filter(Boolean).join('');
+    if(!stage.innerHTML){ toast('ยังไม่มีข้อมูลให้ออก'); stage.innerHTML=''; btn.textContent=label; btn.disabled=false; return; }
+
+    // กันรูปเสีย: รูปใบไหนโหลดไม่ขึ้น ให้ซ่อนไว้ ไม่ให้ html2canvas ค้างหรือพัง
+    await new Promise(r=>setTimeout(r,120));
+    await Promise.all([...stage.querySelectorAll('img')].map(img=>new Promise(res=>{
+      if(img.complete && img.naturalWidth>0) return res();
+      const done=()=>res();
+      const timer=setTimeout(()=>{ img.style.visibility='hidden'; res(); }, 4000);
+      img.onload=()=>{ clearTimeout(timer); done(); };
+      img.onerror=()=>{ clearTimeout(timer); img.style.visibility='hidden'; done(); };
+      if(!img.getAttribute('src')){ clearTimeout(timer); img.style.visibility='hidden'; res(); }
+    })));
+
+    if(!window.html2canvas || !window.jspdf){ throw new Error('โหลดตัวสร้าง PDF ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองใหม่'); }
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({unit:'mm', format:'a4'});
+    const pages=[...stage.querySelectorAll('.page')];
+    for(let i=0;i<pages.length;i++){
+      const cv = await html2canvas(pages[i],{scale:2, backgroundColor:'#ffffff', useCORS:true, logging:false, imageTimeout:5000});
+      if(i) pdf.addPage();
+      pdf.addImage(cv.toDataURL('image/jpeg',.9),'JPEG',0,0,210,Math.min(297,cv.height*210/cv.width));
+    }
+    const tag = kind==='packing'?'ใบลงกล่อง' : kind==='receiving'?'ใบตรวจรับ' : 'ตรวจรับ+ลงกล่อง';
+    const fname = 'SURU_' + trip().name.replace(/\s+/g,'_') + '_' + tag + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+
+    // บนมือถือ ใช้ share sheet ถ้าทำได้ ไม่งั้น save ปกติ
+    let shared=false;
+    try{
+      if(navigator.canShare){
+        const blob = pdf.output('blob');
+        const file = new File([blob], fname, {type:'application/pdf'});
+        if(navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:fname}); shared=true; }
+      }
+    }catch(e){ shared=false; }
+    if(!shared) pdf.save(fname);
+    toast('สร้าง PDF แล้ว');
+    stage.innerHTML=''; btn.textContent=label; btn.disabled=false;
+  } catch(err){
+    stage.innerHTML='';
+    btn.textContent=label; btn.disabled=false;
+    toast(err && err.message ? ('สร้าง PDF ไม่สำเร็จ: ' + err.message) : 'สร้าง PDF ไม่สำเร็จ ลองใหม่อีกครั้ง');
+  }
+}
+
+boot();
+</script>
